@@ -1,0 +1,14 @@
+{
+	"description": "<p>XVIDEOS.COM</p><p>For searching please use Movian's main search field.</p><p>More info at <a href=\"https://github.com/pisek/showtime-plugin-xvideos\">https://github.com/pisek/showtime-plugin-xvideos</a> and <a href=\"http://www.xvideos.com\">http://www.xvideos.com</a>",
+	"author": "pisek", 
+	"homepage": "https://github.com/pisek/showtime-plugin-xvideos",
+	"title": "XVIDEOS.COM",
+	"synopsis": "XVIDEOS.COM",
+	"version": "0.0.1",
+	"file": "xvideos.js",
+	"showtimeVersion": "4.9.46",
+	"type": "ecmascript",
+	"id": "xvideos",
+	"icon": "logo.png",
+	"category": "video"
+}
