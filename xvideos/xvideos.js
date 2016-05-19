@@ -52,25 +52,33 @@
 		page.entries = 0;
 
 		//img - 1, url - 2, title - 3, duration - 4, quality - 5
-		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)" title="(.*?)">[\S\s]*?<span class="duration">\((.+?)\)<\/span>\nPorn quality: (\d+?)%/igm;
+		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)" title="(.*?)">[\S\s]*?<span class="duration">\((.+?)\)<\/span>\nPorn quality: (\d+?) %/igm;
 		var matcher;
 				
-		var pagePattern = /<a href="(.*?)".*?>Next<\/a>/igm;
+		var pagePattern = /<a href="([\w\-\/]*)"[\ \w\"\-=]*?>Next<\/a>/igm;
 		var pageMatcher;
 		
 		var url = DEFAULT_URL;
 		if (search) {
-			url += "/?k=" + search.replace(' ', '+');
+			url += "/?k=" + search.replace(new RegExp(' ', 'g'), '+');
 		} else if (catUrl) {
 			url += catUrl;
 		}
 		
+		var c;
+		
 		function loader() {
 			
 			page.loading = true;
+			
+			if (!url) {
+				return false;
+			}
 		
-			d(url);
-			var c = showtime.httpReq(url);
+			d('Entry url: ' + url);
+			c = showtime.httpReq(url);
+			
+			//d(c.toString());
 			
 			while ((match = pattern.exec(c)) !== null) {
 
@@ -86,25 +94,33 @@
 			
 			page.loading = false;
 			if (pageNumber == 1 && page.metadata) {	//only for first page - search results
-					page.metadata.title += ' (' + page.entries;
-					if (page.entries == 20) {
-						page.metadata.title += '+';
-					}
-					page.metadata.title += ')';
+				page.metadata.title += ' (' + page.entries;
+				if (page.entries == 20) {
+					page.metadata.title += '+';
 				}
-				
-			if ((pageMatcher = pagePattern.exec(c)) !== null) {
-				url = DEFAULT_URL + pageMatcher[1];
-			} else {
-				url = null;
+				page.metadata.title += ')';
 			}
 			
+			url = null;
+			while ((pageMatcher = pagePattern.exec(c)) !== null) {			
+			
+				d("Found next page: " + pageMatcher[1]);
+				url = DEFAULT_URL + pageMatcher[1];
+				break;
+				
+			}
+
+
+			d('Next url: ' + url);
+			
+			
 			pageNumber++;
-			return url == null;
+			return url != null;
 		}
 		
 		//for search to work
 		loader();
+		
 		page.paginator = loader;
 		
 	}
@@ -121,6 +137,9 @@
 		
 		page.appendItem(PREFIX + ":categories", 'directory', {
 			title : "Categories",
+		});
+		page.appendItem(PREFIX + ":tags", 'directory', {
+			title : "Tags",
 		});
 		
 		page.appendItem("", "separator", {
@@ -147,7 +166,7 @@
 			
 		while ((match = pattern.exec(c)) !== null) {
 
-			page.appendItem(PREFIX + ":category:" + match[1], 'directory', {
+			page.appendItem(PREFIX + ":catTagUrl:" + match[1], 'directory', {
 						title : new showtime.RichText(match[2]),
 					});
 			page.entries++; // for searcher to work
@@ -158,12 +177,39 @@
 		
 	});
 	
-	plugin.addURI(PREFIX + ":category:(.*)", function(page, catUrl) {
+	plugin.addURI(PREFIX + ":tags", function(page) {
+		setPageHeader(page, plugin.getDescriptor().synopsis);
+		page.type = "directory";
+		page.contents = "movies";
+		page.entries = 0;
+		
+		//url - 1, title - 2, quantity - 3
+		var pattern = /<li><a href="([\w\/\-\?\&]*?)"><b>([\w\-\s]*?) <\/b><span class=".*?">([\d\,]*?)<\/span><\/a><\/li>/igm;
+		var matcher;
+		
+		page.loading = true;
+		
+		var c = showtime.httpReq(DEFAULT_URL + '/tags');
+			
+		while ((match = pattern.exec(c)) !== null) {
+
+			page.appendItem(PREFIX + ":catTagUrl:" + match[1], 'directory', {
+						title : new showtime.RichText(match[2] + ' (' + match[3] + ' movies)'),
+					});
+			page.entries++; // for searcher to work
+				
+		}
+			
+		page.loading = false;
+		
+	});
+	
+	plugin.addURI(PREFIX + ":catTagUrl:(.*)", function(page, url) {
 		setPageHeader(page, plugin.getDescriptor().synopsis);
 		page.type = "directory";
 		page.contents = "movies";
 		
-		browseItems(page, null, catUrl);
+		browseItems(page, null, url);
 	});
 	
 	plugin.addURI(PREFIX + ":video:(.*):(.*)", function(page, url, title) {
