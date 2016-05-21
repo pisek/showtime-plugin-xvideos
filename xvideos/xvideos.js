@@ -232,8 +232,15 @@
 		//d(c.headers);
 		
 		// 1 - movie url
-		var pattern = /flashvars=".*?flv_url=(.*?)&amp;/igm;
-		if ((match = pattern.exec(c)) !== null) {
+		var mp4_pattern = /new HTML5Player.*?(\s'(http[\S\s]*?)',){2}/igm;
+		// 1 - movie url
+		var flv_pattern = /flashvars=".*?flv_url=(.*?)&amp;/igm;
+		if ((match = mp4_pattern.exec(c)) !== null) {
+			/*c = request(match[1]);
+			d(c.headers);*/
+			d(match[2]);
+			videoUrl = decodeURIComponent(match[2]);
+		} else if ((match = flv_pattern.exec(c)) !== null) {
 			/*c = request(match[1]);
 			d(c.headers);*/
 			d(match[1]);
