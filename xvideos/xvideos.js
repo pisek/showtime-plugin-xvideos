@@ -24,6 +24,8 @@
 	var LOGO = plugin.path + "logo.png";
 	var BACKGROUND = plugin.path + "views/img/background.jpg";
 	
+	var USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36';
+	
 	var DEFAULT_URL = 'http://www.xvideos.com';
 	
 	var service = plugin.createService(plugin.getDescriptor().title, PREFIX + ":start", "video", true, LOGO);
@@ -44,6 +46,14 @@
 
 	function d(c) {
 		print(JSON.stringify(c, null, 4));
+	}
+	
+	function request(url) {
+		return showtime.httpReq(url, {
+			headers: {
+				'User-Agent': USER_AGENT
+			}
+		});
 	}
 	
 	function browseItems(page, search, catUrl) {
@@ -76,7 +86,7 @@
 			}
 		
 			d('Entry url: ' + url);
-			c = showtime.httpReq(url);
+			c = request(url);
 			
 			//d(c.toString());
 			
@@ -162,7 +172,7 @@
 		page.loading = true;
 		
 		d(DEFAULT_URL);
-		var c = showtime.httpReq(DEFAULT_URL);
+		var c = request(DEFAULT_URL);
 			
 		while ((match = pattern.exec(c)) !== null) {
 
@@ -189,7 +199,7 @@
 		
 		page.loading = true;
 		
-		var c = showtime.httpReq(DEFAULT_URL + '/tags');
+		var c = request(DEFAULT_URL + '/tags');
 			
 		while ((match = pattern.exec(c)) !== null) {
 
@@ -218,13 +228,13 @@
 		var videoUrl;
 		var metadata = {};
 		
-		var c = showtime.httpReq(DEFAULT_URL + url);
+		var c = request(DEFAULT_URL + url);
 		//d(c.headers);
 		
 		// 1 - movie url
 		var pattern = /flashvars=".*?flv_url=(.*?)&amp;/igm;
 		if ((match = pattern.exec(c)) !== null) {
-			/*c = showtime.httpReq(match[1]);
+			/*c = request(match[1]);
 			d(c.headers);*/
 			d(match[1]);
 			videoUrl = decodeURIComponent(match[1]);
