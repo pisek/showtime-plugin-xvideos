@@ -57,7 +57,6 @@
 	}
 	
 	function browseItems(page, search, catUrl) {
-		var moreSearchPages = true;		
 		var pageNumber = 1;
 		page.entries = 0;
 
@@ -65,7 +64,7 @@
 		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)" title="(.*?)">[\S\s]*?<span class="duration">\((.+?)\)<\/span>\nPorn quality: (\d+?) %/igm;
 		var matcher;
 				
-		var pagePattern = /<a href="([\w\-\/]*)"[\ \w\"\-=]*?>Next<\/a>/igm;
+		var pagePattern = /<a href="([\w\/\-+&;=?]*)"[\w\- "=]*?>Next<\/a>/igm;
 		var pageMatcher;
 		
 		var url = DEFAULT_URL;
@@ -81,11 +80,12 @@
 			
 			page.loading = true;
 			
+			d('Entry url: ' + url);
+			
 			if (!url) {
 				return false;
 			}
 		
-			d('Entry url: ' + url);
 			c = request(url);
 			
 			//d(c.toString());
@@ -112,14 +112,11 @@
 			}
 			
 			url = null;
-			while ((pageMatcher = pagePattern.exec(c)) !== null) {			
-			
-				d("Found next page: " + pageMatcher[1]);
-				url = DEFAULT_URL + pageMatcher[1];
-				break;
-				
+			while ((pageMatcher = pagePattern.exec(c)) !== null) {
+				var path = pageMatcher[1].replace("&amp;", "&");
+				d("Found next page: " + path);
+				url = DEFAULT_URL + path;	
 			}
-
 
 			d('Next url: ' + url);
 			
