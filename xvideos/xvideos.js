@@ -122,13 +122,15 @@
 			
 			
 			pageNumber++;
-			return url != null;
+			
+			page.haveMore(url != null);
+			
 		}
+		
+		page.asyncPaginator = loader;
 		
 		//for search to work
 		loader();
-		
-		page.paginator = loader;
 		
 	}
 	
