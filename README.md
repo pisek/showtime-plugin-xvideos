@@ -1,5 +1,5 @@
 # showtime-plugin-xvideos
 
-XVIDEOS.COM - Movian porn plugin
+Xvideos.com plugin written for Movian (old Showtime) application
 
-For additional info, visit http://www.xvideos.com
+For additional info, visit https://movian.tv and http://www.xvideos.com
