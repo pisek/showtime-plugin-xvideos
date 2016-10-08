@@ -22,8 +22,6 @@
 (function(plugin) {
 	var PREFIX = plugin.getDescriptor().id;
 	var LOGO = plugin.path + "logo.png";
-	var BACKGROUND = plugin.path + "views/img/background.jpg";
-	
 	var USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.93 Safari/537.36';
 	
 	var DEFAULT_URL = 'http://www.xvideos.com';
@@ -37,9 +35,6 @@
 			if (image) {
 				page.metadata.background = image;
 				page.metadata.backgroundAlpha = 0.3;
-			} else {
-				page.metadata.background = BACKGROUND;
-				page.metadata.backgroundAlpha = 0.7;
 			}
 		}
 	}
@@ -61,7 +56,7 @@
 		page.entries = 0;
 
 		//img - 1, url - 2, title - 3, duration - 4, quality - 5
-		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)" title="(.*?)">[\S\s]*?<span class="duration">\((.+?)\)<\/span>\nPorn quality: (\d+?) %/igm;
+		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)"[\S\s]*?>(.*?)<\/a>[\S\s]*?<span class="duration">\((.+?)\)<\/span>Porn quality: (\d+?) %/igm;
 		var matcher;
 				
 		var pagePattern = /<a href="([\w\/\-+&;=?]*)"[\w\- "=]*?>Next<\/a>/igm;
