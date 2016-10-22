@@ -56,7 +56,7 @@
 		page.entries = 0;
 
 		//img - 1, url - 2, title - 3, duration - 4, quality - 5
-		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)"[\S\s]*?>(.*?)<\/a>[\S\s]*?<span class="duration">\((.+?)\)<\/span>Porn quality: (\d+?) %/igm;
+		var pattern = /<img src="(.*?)" id="pic_\d*?" onload=[\S\s]*?<a href="(.*?)"[\S\s]*?>(.*?)<\/a>[\S\s]*?<span class="bg"><strong>(.+?)<\/strong> - ([\d\%\ ]*) - /igm;
 		var matcher;
 				
 		var pagePattern = /<a href="([\w\/\-+&;=?]*)"[\w\- "=]*?>Next<\/a>/igm;
